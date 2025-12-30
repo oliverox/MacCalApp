@@ -1,7 +1,7 @@
 import SwiftUI
 
 @main
-struct MaccalAppApp: App {
+struct MacCalAppApp: App {
     @State private var formatManager = DateFormatManager.shared
     @State private var currentTime = Date()
 

@@ -1,4 +1,4 @@
-# MaccalApp
+# MacCalApp
 
 A native macOS menu bar calendar app built with SwiftUI.
 
@@ -30,7 +30,7 @@ The app appears in your menu bar showing the current date/time. Click to reveal 
 
 ## Building
 
-1. Open `MaccalApp.xcodeproj` in Xcode
+1. Open `MacCalApp.xcodeproj` in Xcode
 2. Select your development team in Signing & Capabilities
 3. Build and run (⌘R)
 
@@ -56,8 +56,8 @@ On first launch, the app will request access to your calendars. Grant access to 
 ## Project Structure
 
 ```
-MaccalApp/
-├── MaccalAppApp.swift          # App entry point, menu bar setup
+MacCalApp/
+├── MacCalAppApp.swift          # App entry point, menu bar setup
 ├── CalendarPopoverView.swift   # Main calendar popup UI
 ├── CalendarGridView.swift      # Month grid with day cells
 ├── EventsListView.swift        # Events display for selected date
