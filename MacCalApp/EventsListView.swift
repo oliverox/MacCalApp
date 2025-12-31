@@ -3,7 +3,19 @@ import EventKit
 
 struct EventsListView: View {
     let selectedDate: Date
+    var refreshTrigger: Int = 0
+    var onEventCreated: (() -> Void)? = nil
+
     @State private var eventManager = CalendarEventManager.shared
+    @State private var isAddingEvent = false
+    @State private var inputText = ""
+    @State private var feedbackState: FeedbackState = .idle
+    @State private var feedbackMessage = ""
+    @FocusState private var isInputFocused: Bool
+
+    enum FeedbackState {
+        case idle, parsing, success, error
+    }
 
     private var dateString: String {
         let formatter = DateFormatter()
@@ -17,10 +29,74 @@ struct EventsListView: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 8) {
-            Text(isToday ? "Today's Events" : "Events")
-                .font(.subheadline)
-                .fontWeight(.medium)
-                .foregroundStyle(.secondary)
+            // Header with + button
+            HStack {
+                Text(isToday ? "Today's Events" : "Events")
+                    .font(.subheadline)
+                    .fontWeight(.medium)
+                    .foregroundStyle(.secondary)
+
+                Spacer()
+
+                if eventManager.authorizationStatus == .fullAccess {
+                    Button(action: {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            isAddingEvent.toggle()
+                            if isAddingEvent {
+                                isInputFocused = true
+                            } else {
+                                inputText = ""
+                                feedbackMessage = ""
+                                feedbackState = .idle
+                                isInputFocused = false
+                            }
+                        }
+                    }) {
+                        Image(systemName: isAddingEvent ? "xmark.circle" : "plus.circle")
+                            .font(.system(size: 14))
+                    }
+                    .buttonStyle(.plain)
+                    .foregroundStyle(.secondary)
+                    .help(isAddingEvent ? "Cancel" : "Add event")
+                }
+            }
+
+            // Expandable quick add input
+            if isAddingEvent {
+                VStack(alignment: .leading, spacing: 4) {
+                    HStack(spacing: 8) {
+                        TextField("e.g., movie at 7pm", text: $inputText)
+                            .textFieldStyle(.plain)
+                            .font(.caption)
+                            .focused($isInputFocused)
+                            .onSubmit { submitEvent() }
+                            .disabled(feedbackState == .parsing)
+
+                        if feedbackState == .parsing {
+                            ProgressView()
+                                .scaleEffect(0.5)
+                                .frame(width: 12, height: 12)
+                        }
+                    }
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 6)
+                    .background(
+                        RoundedRectangle(cornerRadius: 6)
+                            .fill(Color.primary.opacity(0.05))
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 6)
+                            .stroke(borderColor, lineWidth: 1)
+                    )
+
+                    if !feedbackMessage.isEmpty {
+                        Text(feedbackMessage)
+                            .font(.caption2)
+                            .foregroundStyle(feedbackState == .error ? .red : .green)
+                    }
+                }
+                .transition(.opacity.combined(with: .move(edge: .top)))
+            }
 
             switch eventManager.authorizationStatus {
             case .notDetermined:
@@ -47,11 +123,70 @@ struct EventsListView: View {
             }
         }
         .animation(.none, value: eventManager.events.count)
-        .task(id: selectedDate) {
+        .task(id: "\(selectedDate)-\(refreshTrigger)") {
             await eventManager.fetchEvents(for: selectedDate)
         }
         .onAppear {
             eventManager.updateAuthorizationStatus()
+        }
+    }
+
+    private var borderColor: Color {
+        switch feedbackState {
+        case .idle: return Color.primary.opacity(0.1)
+        case .parsing: return Color.accentColor.opacity(0.5)
+        case .success: return Color.green.opacity(0.5)
+        case .error: return Color.red.opacity(0.5)
+        }
+    }
+
+    private func submitEvent() {
+        guard !inputText.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+
+        feedbackState = .parsing
+        feedbackMessage = ""
+
+        Task {
+            let result = await eventManager.createEventFromNaturalLanguage(
+                inputText,
+                referenceDate: selectedDate
+            )
+
+            await MainActor.run {
+                switch result {
+                case .success(let eventTitle):
+                    feedbackState = .success
+                    feedbackMessage = "Added: \(eventTitle)"
+                    inputText = ""
+
+                    // Refresh the events list
+                    Task {
+                        await eventManager.fetchEvents(for: selectedDate)
+                    }
+                    onEventCreated?()
+
+                    // Clear success message and close input after delay
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
+                        withAnimation(.easeInOut(duration: 0.2)) {
+                            feedbackState = .idle
+                            feedbackMessage = ""
+                            isAddingEvent = false
+                        }
+                    }
+
+                case .failure(let error):
+                    feedbackState = .error
+                    feedbackMessage = error.localizedDescription
+
+                    // Clear error message after delay
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 3) {
+                        if feedbackState == .error {
+                            feedbackState = .idle
+                            feedbackMessage = ""
+                        }
+                    }
+                }
+            }
         }
     }
 }
