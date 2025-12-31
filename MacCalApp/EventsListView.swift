@@ -99,7 +99,7 @@ struct EventsList: View {
     let eventManager: CalendarEventManager
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 6) {
+        VStack(alignment: .leading, spacing: 2) {
             ForEach(events.prefix(5), id: \.eventIdentifier) { event in
                 EventRow(event: event, eventManager: eventManager)
             }
@@ -108,7 +108,7 @@ struct EventsList: View {
                 Text("+\(events.count - 5) more")
                     .font(.caption2)
                     .foregroundStyle(.tertiary)
-                    .padding(.leading, 12)
+                    .padding(.leading, 20)
             }
         }
     }
@@ -117,26 +117,42 @@ struct EventsList: View {
 struct EventRow: View {
     let event: EKEvent
     let eventManager: CalendarEventManager
+    @State private var isHovered = false
 
     var body: some View {
-        HStack(alignment: .top, spacing: 8) {
-            Circle()
-                .fill(eventManager.calendarColor(for: event))
-                .frame(width: 8, height: 8)
-                .padding(.top, 4)
+        Button(action: {
+            eventManager.openEventInCalendar(event)
+        }) {
+            HStack(alignment: .top, spacing: 8) {
+                Circle()
+                    .fill(eventManager.calendarColor(for: event))
+                    .frame(width: 8, height: 8)
+                    .padding(.top, 4)
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(event.title ?? "Untitled")
-                    .font(.caption)
-                    .fontWeight(.medium)
-                    .lineLimit(1)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(event.title ?? "Untitled")
+                        .font(.caption)
+                        .fontWeight(.medium)
+                        .lineLimit(1)
 
-                Text(eventManager.formatEventTime(event))
-                    .font(.caption2)
-                    .foregroundStyle(.secondary)
+                    Text(eventManager.formatEventTime(event))
+                        .font(.caption2)
+                        .foregroundStyle(.secondary)
+                }
+
+                Spacer()
             }
-
-            Spacer()
+            .padding(.horizontal, 6)
+            .padding(.vertical, 4)
+            .background(
+                RoundedRectangle(cornerRadius: 4)
+                    .fill(isHovered ? Color.primary.opacity(0.1) : Color.clear)
+            )
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .onHover { hovering in
+            isHovered = hovering
         }
     }
 }
