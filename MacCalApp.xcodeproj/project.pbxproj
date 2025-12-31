@@ -15,6 +15,10 @@
 		A1000001234567890000006 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1000002234567890000006 /* Assets.xcassets */; };
 		A1000001234567890000007 /* CalendarEventManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002234567890000007 /* CalendarEventManager.swift */; };
 		A1000001234567890000008 /* EventsListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002234567890000008 /* EventsListView.swift */; };
+		A1000001234567890000009 /* KeyboardShortcut.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002234567890000009 /* KeyboardShortcut.swift */; };
+		A1000001234567890000010 /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002234567890000010 /* HotkeyManager.swift */; };
+		A1000001234567890000011 /* StatusBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002234567890000011 /* StatusBarController.swift */; };
+		A1000001234567890000012 /* KeyboardShortcutRecorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002234567890000012 /* KeyboardShortcutRecorder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +30,10 @@
 		A1000002234567890000006 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A1000002234567890000007 /* CalendarEventManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CalendarEventManager.swift; sourceTree = "<group>"; };
 		A1000002234567890000008 /* EventsListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EventsListView.swift; sourceTree = "<group>"; };
+		A1000002234567890000009 /* KeyboardShortcut.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcut.swift; sourceTree = "<group>"; };
+		A1000002234567890000010 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
+		A1000002234567890000011 /* StatusBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatusBarController.swift; sourceTree = "<group>"; };
+		A1000002234567890000012 /* KeyboardShortcutRecorder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KeyboardShortcutRecorder.swift; sourceTree = "<group>"; };
 		A1000003234567890000001 /* MacCalApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MacCalApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -58,6 +66,10 @@
 				A1000002234567890000004 /* CalendarPopoverView.swift */,
 				A1000002234567890000008 /* EventsListView.swift */,
 				A1000002234567890000005 /* SettingsView.swift */,
+				A1000002234567890000009 /* KeyboardShortcut.swift */,
+				A1000002234567890000010 /* HotkeyManager.swift */,
+				A1000002234567890000011 /* StatusBarController.swift */,
+				A1000002234567890000012 /* KeyboardShortcutRecorder.swift */,
 				A1000002234567890000006 /* Assets.xcassets */,
 			);
 			path = MacCalApp;
@@ -147,6 +159,10 @@
 				A1000001234567890000004 /* CalendarPopoverView.swift in Sources */,
 				A1000001234567890000008 /* EventsListView.swift in Sources */,
 				A1000001234567890000005 /* SettingsView.swift in Sources */,
+				A1000001234567890000009 /* KeyboardShortcut.swift in Sources */,
+				A1000001234567890000010 /* HotkeyManager.swift in Sources */,
+				A1000001234567890000011 /* StatusBarController.swift in Sources */,
+				A1000001234567890000012 /* KeyboardShortcutRecorder.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

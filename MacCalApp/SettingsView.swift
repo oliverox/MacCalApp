@@ -4,6 +4,7 @@ import ServiceManagement
 struct SettingsView: View {
     @Environment(\.dismiss) private var dismiss
     @State private var formatManager = DateFormatManager.shared
+    @State private var hotkeyManager = HotkeyManager.shared
     @State private var startAtLogin = false
 
     var body: some View {
@@ -62,6 +63,22 @@ struct SettingsView: View {
             Divider()
 
             VStack(alignment: .leading, spacing: 8) {
+                Text("Keyboard Shortcut")
+                    .font(.headline)
+
+                Text("Toggle calendar popover")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+
+                KeyboardShortcutRecorder(shortcut: Binding(
+                    get: { hotkeyManager.currentShortcut },
+                    set: { hotkeyManager.currentShortcut = $0 }
+                ))
+            }
+
+            Divider()
+
+            VStack(alignment: .leading, spacing: 8) {
                 Text("Format Reference")
                     .font(.headline)
 
@@ -94,7 +111,7 @@ struct SettingsView: View {
             }
         }
         .padding(20)
-        .frame(width: 320, height: 500)
+        .frame(width: 320, height: 580)
         .onAppear {
             checkLaunchAtLoginStatus()
         }
