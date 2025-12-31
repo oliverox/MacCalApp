@@ -1,5 +1,6 @@
 import EventKit
 import SwiftUI
+import AppKit
 
 @Observable
 class CalendarEventManager {
@@ -84,5 +85,17 @@ class CalendarEventManager {
         let end = formatter.string(from: event.endDate)
 
         return "\(start) - \(end)"
+    }
+
+    func openEventInCalendar(_ event: EKEvent) {
+        let timestamp = event.startDate.timeIntervalSinceReferenceDate
+        if let url = URL(string: "ical://ekevent/\(event.eventIdentifier ?? "")") {
+            NSWorkspace.shared.open(url)
+        } else {
+            // Fallback: open Calendar.app to the event's date
+            if let calendarURL = URL(string: "calshow:\(timestamp)") {
+                NSWorkspace.shared.open(calendarURL)
+            }
+        }
     }
 }
